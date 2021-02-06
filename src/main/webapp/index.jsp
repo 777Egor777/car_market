@@ -11,12 +11,20 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
             integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <title>Car Market</title>
+    <script>
+        function filter() {
+            let selectBox = document.getElementById("brandSelectBox");
+            let selectedValue = selectBox.options[selectBox.selectedIndex].value;
+            document.location.href = '<%=request.getContextPath()%>/index.do?filter=' + selectedValue;
+            return true;
+            }
+    </script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -44,7 +52,33 @@
         </div>
     </div>
 </nav>
-<div class="container pt-3 bg-primary">
+<div class="container pt-3">
+    <div class="row">
+        <form action="<%=request.getContextPath()%>/index.do" method="get">
+            <input type="hidden" name="filter" value="all">
+            <button type="submit"
+                    class="btn btn-outline-primary">Показать все
+            </button>
+        </form>
+        <form action="<%=request.getContextPath()%>/index.do" method="get">
+            <input type="hidden" name="filter" value="day">
+            <button type="submit"
+                    class="btn btn-outline-primary">За последний день
+            </button>
+        </form>
+        <form action="<%=request.getContextPath()%>/index.do" method="get">
+            <input type="hidden" name="filter" value="photo">
+            <button type="submit"
+                    class="btn btn-outline-primary">С фото
+            </button>
+        </form>
+        <select id="brandSelectBox" onchange="filter()">
+            <option disabled selected>Фильтр по марке</option>
+            <c:forEach items="${brands}" var="brand">
+                <option value="<c:out value="${brand.name}"/>"><c:out value="${brand.name}"/></option>
+            </c:forEach>
+        </select>
+    </div>
     <div class="row">
         <div class="card" style="width: 100%">
             <div class="card-header">

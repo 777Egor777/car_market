@@ -1,8 +1,11 @@
 package ru.job4j.carmarket.model;
 
+import ru.job4j.carmarket.store.AdvertisementStore;
 import ru.job4j.carmarket.store.HibernateAdvertisementStore;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
@@ -36,6 +39,8 @@ public class Advertisement {
     private User user;
     private String photoName;
     private boolean status;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created;
 
     public Advertisement() {
     }
@@ -58,6 +63,7 @@ public class Advertisement {
         }
         this.photoName = photoName;
         status = true;
+        created = new Date(System.currentTimeMillis());
     }
 
     public int getId() {
@@ -148,6 +154,14 @@ public class Advertisement {
         this.status = status;
     }
 
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -159,12 +173,57 @@ public class Advertisement {
 
         Advertisement that = (Advertisement) o;
 
-        return id == that.id;
+        if (id != that.id) {
+            return false;
+        }
+        if (miles != that.miles) {
+            return false;
+        }
+        if (price != that.price) {
+            return false;
+        }
+        if (status != that.status) {
+            return false;
+        }
+        if (!Objects.equals(brand, that.brand)) {
+            return false;
+        }
+        if (!Objects.equals(model, that.model)) {
+            return false;
+        }
+        if (!Objects.equals(color, that.color)) {
+            return false;
+        }
+        if (!Objects.equals(category, that.category)) {
+            return false;
+        }
+        if (!Objects.equals(year, that.year)) {
+            return false;
+        }
+        if (!Objects.equals(user, that.user)) {
+            return false;
+        }
+        if (!Objects.equals(photoName, that.photoName)) {
+            return false;
+        }
+        return Objects.equals(created, that.created);
     }
 
     @Override
     public int hashCode() {
-        return id;
+        int result = id;
+        result = 31 * result + (brand != null ? brand.hashCode() : 0);
+        result = 31 * result + (model != null ? model.hashCode() : 0);
+        result = 31 * result + (color != null ? color.hashCode() : 0);
+        result = 31 * result + (category != null ? category.hashCode() : 0);
+        result = 31 * result + (year != null ? year.hashCode() : 0);
+        result = 31 * result + miles;
+        result = 31 * result + price;
+        result = 31 * result + (user != null ? user.hashCode() : 0);
+        result = 31 * result + (photoName != null ? photoName.hashCode() : 0);
+        result = 31 * result + (status ? 1 : 0);
+        result = 31 * result + (created != null ? created.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -179,22 +238,21 @@ public class Advertisement {
                 .add("miles=" + miles)
                 .add("price=" + price)
                 .add("user=" + user)
+                .add("photoName='" + photoName + "'")
+                .add("status=" + status)
+                .add("created=" + created)
                 .toString();
     }
 
     public static void main(String[] args) {
-        HibernateAdvertisementStore.instOf().create(
-                new Advertisement(
-                        new Brand(1),
-                        "xx",
-                        new Color(1),
-                        new Category(1),
-                        new Year(2020),
-                        100,
-                        100,
-                        null,
-                        null
-                )
-        );
+        try (AdvertisementStore store = HibernateAdvertisementStore.instOf()) {
+            for (int i = 1; i <= 3; ++i) {
+                Advertisement ad = store.getAdById(i);
+                ad.setCreated(new Date(System.currentTimeMillis()));
+                store.update(ad);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

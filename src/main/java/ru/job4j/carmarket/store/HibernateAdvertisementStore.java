@@ -34,7 +34,7 @@ public class HibernateAdvertisementStore implements AdvertisementStore, AutoClos
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         StandardServiceRegistryBuilder.destroy(registry);
     }
 
@@ -75,7 +75,7 @@ public class HibernateAdvertisementStore implements AdvertisementStore, AutoClos
     }
 
     @Override
-    public Advertisement getAtById(int id) {
+    public Advertisement getAdById(int id) {
         return tx(session -> session.get(Advertisement.class, id));
     }
 
