@@ -18,25 +18,20 @@ import java.util.stream.Collectors;
  * @since 31.01.2021
  */
 public class IndexServlet extends HttpServlet {
-    private static final long MILLIS_PER_DAY = 24 * 60 * 60 * 1000;
-
-    private boolean isToday(Advertisement ad) {
-        return System.currentTimeMillis() - ad.getCreated().getTime() < MILLIS_PER_DAY;
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String filter = req.getParameter("filter");
-        List<Advertisement> ads = HibernateAdvertisementStore.instOf().getAll(Advertisement.class);
-        if (filter != null && !filter.equals("all")) {
-            if (filter.equals("day")) {
-                ads = ads.stream().filter(this::isToday).collect(Collectors.toList());
-            } else if (filter.equals("photo")) {
-                ads = ads.stream().filter(ad -> !ad.getPhotoName().equals("empty.jpg"))
-                .collect(Collectors.toList());
-            } else {
-                ads = ads.stream().filter(ad -> ad.getBrand().getName().equals(filter)).collect(Collectors.toList());
-            }
+        List<Advertisement> ads;
+        if (filter == null || filter.equals("all")) {
+            ads = HibernateAdvertisementStore.instOf().getAll(Advertisement.class);
+        } else if (filter.equals("day")) {
+            ads = HibernateAdvertisementStore.instOf().getTodayAds();
+        } else if (filter.equals("photo")) {
+            ads = HibernateAdvertisementStore.instOf().getAdsWithPhoto();
+            System.out.println("ads with photo:\n" + ads);
+        } else {
+            ads = HibernateAdvertisementStore.instOf().getAdsByBrand(filter);
         }
         req.setAttribute("ads", ads);
         req.setAttribute("user", req.getSession().getAttribute("user"));
@@ -45,7 +40,7 @@ public class IndexServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int adId = Integer.parseInt(req.getParameter("ad_id"));
         Advertisement ad = HibernateAdvertisementStore.instOf().getAdById(adId);
         ad.setStatus(false);

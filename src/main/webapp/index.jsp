@@ -115,7 +115,7 @@
                             </td>
                             <td>
                                 <c:if test="${ad.photoName != null}">
-                                    <img src='<c:url value="/download?name=${ad.photoName}"/>' width="200px" height="200px" />
+                                    <img src='<c:url value="/download?name=${ad.photoName}"/>' width="350px" height="200px" />
                                 </c:if>
                                 <c:if test="${ad.photoName == null}">
                                     <img src='<c:url value="/download?name=empty.jpg"/>' width="200px" height="200px" />

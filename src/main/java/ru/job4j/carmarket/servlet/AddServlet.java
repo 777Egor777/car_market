@@ -34,7 +34,7 @@ public class AddServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = (User) req.getSession().getAttribute("user");
         String photoName = null;
         DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -52,7 +52,6 @@ public class AddServlet extends HttpServlet {
             for (FileItem item : items) {
                 if (!item.isFormField()) {
                     photoName = item.getName();
-                    System.out.println("!!" + photoName);
                     File file = new File(folder + File.separator + photoName);
                     try (FileOutputStream output = new FileOutputStream(file)) {
                         output.write(item.getInputStream().readAllBytes());
@@ -71,6 +70,9 @@ public class AddServlet extends HttpServlet {
         Year year = new Year(Integer.parseInt(params.get("year")));
         int miles = Integer.parseInt(params.get("miles"));
         int price = Integer.parseInt(params.get("price"));
+        if (photoName == null) {
+            photoName = "empty.jpg";
+        }
         HibernateAdvertisementStore.instOf().create(
                 new Advertisement(
                         brand,

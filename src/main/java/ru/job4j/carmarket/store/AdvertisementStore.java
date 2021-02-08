@@ -8,5 +8,8 @@ public interface AdvertisementStore extends AutoCloseable {
     <T> T create(T model);
     <T> T update(T model);
     <T> List<T> getAll(Class<T> cl);
+    List<Advertisement> getTodayAds();
+    List<Advertisement> getAdsByBrand(String brand);
+    List<Advertisement> getAdsWithPhoto();
     Advertisement getAdById(int id);
 }

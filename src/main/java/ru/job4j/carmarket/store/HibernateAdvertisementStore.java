@@ -1,14 +1,18 @@
 package ru.job4j.carmarket.store;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.criterion.Restrictions;
 import ru.job4j.carmarket.model.Advertisement;
 import ru.job4j.carmarket.model.Category;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
@@ -21,6 +25,7 @@ public class HibernateAdvertisementStore implements AdvertisementStore, AutoClos
     private final StandardServiceRegistry registry =
             new StandardServiceRegistryBuilder().configure().build();
     private final SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+    private static final long MILLIS_PER_DAY = 24 * 60 * 60 * 1000;
 
     private HibernateAdvertisementStore() {
     }
@@ -72,6 +77,30 @@ public class HibernateAdvertisementStore implements AdvertisementStore, AutoClos
     @Override
     public <T> List<T> getAll(Class<T> cl) {
         return tx(session -> session.createQuery("from " + cl.getName()).list());
+    }
+
+    @Override
+    public List<Advertisement> getTodayAds() {
+        return tx(session -> {
+            Criteria criteria = session.createCriteria(Advertisement.class)
+                    .add(Restrictions.gt(
+                            "created",
+                            new Date(System.currentTimeMillis() - MILLIS_PER_DAY))
+                    );
+            return criteria.list();
+        });
+    }
+
+    @Override
+    public List<Advertisement> getAdsByBrand(String brand) {
+        return tx(session -> session.createQuery("from Advertisement where brand.name = :paramBrand")
+                .setParameter("paramBrand", brand).list());
+    }
+
+    @Override
+    public List<Advertisement> getAdsWithPhoto() {
+        return tx(session -> session.createQuery("from Advertisement where photoName != :paramPhotoName")
+                .setParameter("paramPhotoName", "empty.jpg").list());
     }
 
     @Override
