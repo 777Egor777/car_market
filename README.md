@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/777Egor777/car_market.svg?branch=master)](https://travis-ci.org/777Egor777/car_market)
+[![codecov](https://codecov.io/gh/777Egor777/car_market/branch/master/graph/badge.svg?token=FQEI39TXLA)](https://codecov.io/gh/777Egor777/car_market)
 
 # Car market
 
@@ -194,12 +195,6 @@ TODO
 Интеграционные тесты на Hibernate-хранилища с применением HsqlDB: 
 * [HibernateAdvertisementStoreTest](src/test/java/ru/job4j/carmarket/store/HibernateAdvertisementStoreTest.java)
 * [HibernateUserStoreTest](src/test/java/ru/job4j/carmarket/store/HibernateUserStoreTest.java)
-
-На Hibernate-хранилища написаны интеграционные тесты с применением технологии HsqlDB:
-* [HibernateTaskStoreTest](src/test/java/ru/job4j/todo/store/HibernateTaskStoreTest.java) - 
-тесты на HibernateTaskStore
-* [HibernateUserStoreTest](src/test/java/ru/job4j/todo/store/HibernateUserStoreTest.java) - 
-тесты на HibernateUserStore
 
 
 ## Автор
