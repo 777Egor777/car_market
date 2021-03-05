@@ -21,7 +21,7 @@ import java.util.function.Function;
  * @version 1.0
  * @since 01.02.2021
  */
-public class HibernateAdvertisementStore implements AdvertisementStore, AutoCloseable {
+public class HibernateAdvertisementStore implements AdvertisementStore {
     private final StandardServiceRegistry registry =
             new StandardServiceRegistryBuilder().configure().build();
     private final SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
@@ -36,6 +36,10 @@ public class HibernateAdvertisementStore implements AdvertisementStore, AutoClos
 
     public static AdvertisementStore instOf() {
         return Holder.INSTANCE;
+    }
+
+    public static AdvertisementStore instanceForTest() {
+        return new HibernateAdvertisementStore();
     }
 
     @Override
@@ -108,7 +112,4 @@ public class HibernateAdvertisementStore implements AdvertisementStore, AutoClos
         return tx(session -> session.get(Advertisement.class, id));
     }
 
-    public static void main(String[] args) {
-        System.out.println(instOf().getAll(Category.class));
-    }
 }

@@ -206,7 +206,7 @@ public class Advertisement {
         if (!Objects.equals(photoName, that.photoName)) {
             return false;
         }
-        return Objects.equals(created, that.created);
+        return Objects.equals(created.getTime(), that.created.getTime());
     }
 
     @Override

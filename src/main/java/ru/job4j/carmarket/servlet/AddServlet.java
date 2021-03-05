@@ -70,7 +70,8 @@ public class AddServlet extends HttpServlet {
         Year year = new Year(Integer.parseInt(params.get("year")));
         int miles = Integer.parseInt(params.get("miles"));
         int price = Integer.parseInt(params.get("price"));
-        if (photoName == null) {
+        System.out.println("\n\n\n!" + photoName + "!\n\n\n");
+        if (photoName == null || photoName.equals("")) {
             photoName = "empty.jpg";
         }
         HibernateAdvertisementStore.instOf().create(
